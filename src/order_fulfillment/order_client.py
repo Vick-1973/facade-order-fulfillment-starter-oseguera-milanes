@@ -1,21 +1,11 @@
-from .inventory_service import InventoryService
-from .notification_service import NotificationService
 from .order import Order
-from .payment_service import PaymentService
-from .shipping_service import ShippingService
+from .order_fulfillment_facade import OrderFulfillmentFacade
 
 
 class OrderClient:
-    def __init__(self, inventory: InventoryService, payment: PaymentService, shipping: ShippingService, notification: NotificationService):
-        self.inventory = inventory
-        self.payment = payment
-        self.shipping = shipping
-        self.notification = notification
+    def __init__(self, facade: OrderFulfillmentFacade):
+        self.facade = facade
 
     def place_order(self, order: Order) -> list[str]:
-        return [
-            self.inventory.reserve(order),
-            self.payment.charge(order),
-            self.shipping.create_shipment(order),
-            self.notification.send_confirmation(order),
-        ]
+        return self.facade.place_order(order)
+
